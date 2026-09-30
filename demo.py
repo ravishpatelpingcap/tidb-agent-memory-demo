@@ -4,6 +4,8 @@
   python demo.py forget     run 1: small context window + a notes file. Compaction loses the date.
   python demo.py remember   run 2: the same chat, every turn also saved in TiDB. Recall finds it.
   python demo.py recall     a brand-new process, empty context, asks again. Only TiDB can answer.
+                            Add your own question: python demo.py recall "What date is Atlas shipping?"
+  Add --step to forget or remember to play the chat one exchange at a time.
   python demo.py reset      delete the rows this demo created
   python demo.py zero       optional: get a free, disposable TiDB Cloud Zero database and write .env
 """
@@ -37,7 +39,13 @@ def note(text):
     print(f"         {text}")
 
 
-def run_chat(conn=None):
+def pause(step):
+    """With --step, wait for Enter so the chat plays one exchange at a time."""
+    if step and sys.stdin.isatty():
+        input("         (press Enter to continue)")
+
+
+def run_chat(conn=None, step=False):
     """Play the scripted chat. With a connection, every message is also saved in TiDB."""
     context, spent, summary = [], 0, []
     notes = ["# Things to remember"]   # the agent's memory.md, kept as a list here
@@ -59,6 +67,7 @@ def run_chat(conn=None):
             summary.append(turn["summary"])
         used = sum(t for _, t in context)
         note(f"context window: {used:,} / {chat.WINDOW:,} tokens")
+        pause(step)
         print()
         if used > chat.WINDOW:
             kept = context[-2:]
@@ -67,6 +76,7 @@ def run_chat(conn=None):
             note(f'kept verbatim: the latest exchange ("{kept[0][0]}" and the reply)')
             note(f'deleted      : every older message, including "...we ship on {chat.FACT}."')
             context = [("I " + "; ".join(summary) + ".", 0)] + kept
+            pause(step)
             print()
     q_tok = memory.tokens(chat.QUESTION)
     say("you", chat.QUESTION, q_tok)
@@ -81,12 +91,12 @@ def cmd_setup(_):
     print("Ready: agent_memory with auto-embedding, a vector index, and a full-text index.")
 
 
-def cmd_forget(_):
+def cmd_forget(args):
     line("=")
     print("RUN 1 (scripted chat, no LLM): a 6,000-token context window plus a memory.md notes file.")
     print("No database.")
     line("=")
-    context, notes, spent = run_chat()
+    context, notes, spent = run_chat(step=args.step)
     # A real check: is the date anywhere the agent can still see?
     if any(chat.FACT in text for text, _ in context) or any(chat.FACT in n for n in notes):
         say("agent", "Found it.")
@@ -100,7 +110,7 @@ def cmd_forget(_):
     print(f"Getting it back means re-reading the whole chat, about {spent:,} tokens, if a transcript was kept.")
 
 
-def cmd_remember(_):
+def cmd_remember(args):
     conn = memory.connect()
     cleared = memory.reset(conn, chat.USER_ID, chat.SESSION_ID)
     line("=")
@@ -108,13 +118,13 @@ def cmd_remember(_):
     if cleared:
         print(f"(cleared {cleared} rows from a previous run)")
     line("=")
-    _, _, spent = run_chat(conn)
+    _, _, spent = run_chat(conn, step=args.step)
     answer(conn, spent)
 
 
-def answer(conn, spent=None):
+def answer(conn, spent=None, question=chat.QUESTION):
     t0 = time.perf_counter()
-    rows = memory.recall(conn, chat.USER_ID, chat.SESSION_ID, chat.QUESTION)
+    rows = memory.recall(conn, chat.USER_ID, chat.SESSION_ID, question)
     ms = (time.perf_counter() - t0) * 1000
     print()
     if not rows:
@@ -126,6 +136,10 @@ def answer(conn, spent=None):
         note(f'{i}. [{r["speaker"]}, {r["tokens"]} tokens, {" + ".join(r["found_by"])}] {r["content"]}')
     print()
     top = rows[0]
+    if question != chat.QUESTION:
+        # Your own question: there is no scripted answer, so just show what TiDB found.
+        say("agent", f'Closest match in my memory table: "{top["content"]}"')
+        return
     if chat.FACT not in top["content"]:
         say("agent", "I could not find that in my memory table.")
         return
@@ -139,11 +153,12 @@ def answer(conn, spent=None):
         print(f"Recall pulled back {recalled} tokens from TiDB.")
 
 
-def cmd_recall(_):
+def cmd_recall(args):
     conn = memory.connect()
+    question = args.question or chat.QUESTION
     print("A brand-new process: no conversation, no summary, no notes. Only the table.")
-    say("you", chat.QUESTION)
-    answer(conn)
+    say("you", question)
+    answer(conn, question=question)
 
 
 def cmd_reset(_):
@@ -199,6 +214,10 @@ def main():
         sp.set_defaults(fn=fn)
         if name == "zero":
             sp.add_argument("--force", action="store_true", help="overwrite existing .env")
+        if name in ("forget", "remember"):
+            sp.add_argument("--step", action="store_true", help="pause after each exchange")
+        if name == "recall":
+            sp.add_argument("question", nargs="?", help="your own question (default: the Atlas one)")
     args = p.parse_args()
     try:
         args.fn(args)

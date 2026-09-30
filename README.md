@@ -68,6 +68,14 @@ python demo.py recall         # new process, empty context: still recalled
 python demo.py reset          # delete this demo's rows
 ```
 
+Two options:
+
+- `python demo.py forget --step` (or `remember --step`) plays the chat one exchange at a time.
+  Press Enter to continue.
+- `python demo.py recall "What date is Atlas shipping?"` asks your own question. TiDB runs the
+  same hybrid search and shows the closest stored messages. Only the default question gets a
+  scripted answer line.
+
 ## What you should see
 
 `python demo.py forget` plays the chat turn by turn, then ends like this:
