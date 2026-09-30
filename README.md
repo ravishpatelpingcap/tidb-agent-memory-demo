@@ -191,7 +191,3 @@ fetch the nearest rows first, then filter.
   waits up to five minutes.
 - **An insert pauses and retries:** the free embedding model can briefly rate-limit. The demo
   retries automatically.
-
-## License
-
-Apache License 2.0. See [LICENSE](LICENSE).
