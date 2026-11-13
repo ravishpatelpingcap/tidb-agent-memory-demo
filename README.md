@@ -11,11 +11,12 @@ Memory Table Fixes It*. It reproduces the post's result in a terminal:
 
 **What's real and what's scripted.** The chat is scripted, so every run is identical and no LLM or
 API key is needed. The replies, the notes the agent writes to `memory.md` (a list kept in memory,
-not a file on disk), when compaction happens, and the summary are all fixed. The long replies carry
-set token sizes but are stored as one-line stand-ins. The agent's closing lines are templates too:
-run 1 checks whether "Oct 12" is still anywhere in its compacted context or notes, and run 2 checks
-whether the top recalled row contains "Oct 12", then states the date and quotes that row. No model
-reads the row. The TiDB part is real: each message is inserted, TiDB embeds it on insert, and recall
+not a file on disk), when compaction happens, and the summary are all fixed. The long replies are
+saved to TiDB in full; the terminal shows them shortened. Every token count is estimated the same
+way: characters / 4 of the saved text. The agent's closing lines are templates too: run 1 checks
+whether "Oct 12" is still anywhere in its compacted context or notes, and run 2 checks whether any
+of the rows the search returned contains "Oct 12", then states the date and quotes that row. No
+model reads the row. The TiDB part is real: each message is inserted, TiDB embeds it on insert, and recall
 runs real vector and full-text queries against the table.
 
 ## You need
@@ -73,15 +74,15 @@ Two options:
 - `python demo.py forget --step` (or `remember --step`) plays the chat one exchange at a time.
   Press Enter to continue.
 - `python demo.py recall "What date is Atlas shipping?"` asks your own question. TiDB runs the
-  same hybrid search and shows the closest stored messages. Only the default question gets a
-  scripted answer line.
+  same hybrid search, shows the closest saved messages, and prints how many tokens it read back.
+  Only the default question gets a scripted answer line.
 
 ## What you should see
 
 `python demo.py forget` plays the chat turn by turn, then ends like this:
 
 ```
-== Context window full (7,554 / 6,000). The agent compacts:
+== Context window full (7,544 / 6,000). The agent compacts:
          summary kept : "I prepped the Atlas launch; summarized the vendor report; planned the 3-day offsite."
          kept verbatim: the latest exchange ("Plan a 3-day team offsite." and the reply)
          deleted      : every older message, including "...we ship on Oct 12."
@@ -93,25 +94,18 @@ Forgotten. The summary kept the task, not the date, and memory.md never had it:
          # Things to remember
          - Maya, birthday March 14
          - Works as a Product Manager
-Getting it back means re-reading the whole chat, about 7,562 tokens, if a transcript was kept.
+Getting it back means re-reading the whole chat, about 7,552 tokens, if a transcript was kept.
 ```
 
-`python demo.py remember` plays the same chat, saves each message, and ends like this:
+`python demo.py remember` plays the same chat, saves each message in full, and ends like this:
 
 ```
-Hybrid recall over agent_memory (vector + full-text, fused with RRF), 655 ms:
-         1. [user, 18 tokens, vector #1 + full-text #1] I'm a Product Manager. Help me prep the Atlas launch, we ship on Oct 12.
-         2. [agent, 29 tokens, vector #2 + full-text #3] On it! Atlas launch prep: messaging doc, pricing page, beta-customer quotes, and a launch-day checklist... [full plan]
-         3. [agent, 20 tokens, vector #3 + full-text #2] Nice to meet you! Let me note that down. So, what are you working on these days?
-
- agent > Atlas ships on Oct 12. Found it in my memory table: "I'm a Product Manager. Help me prep the Atlas launch, we ship on Oct 12."
-
-This chat cost about 7,562 tokens (scripted reply sizes). Recall pulled back 67 tokens from TiDB, about 113x fewer than re-reading it.
+TODO(measure): paste the tail of a real `remember` run here, from the "Saved: ..." line to the end.
 ```
 
-`python demo.py recall` starts a new process with no conversation at all. It returns the same
-three rows and answer, and ends with `Recall pulled back 67 tokens from TiDB.` Timings vary with
-your region and whether the instance was idle.
+`python demo.py recall` starts a new process with no conversation at all. TODO(measure): confirm it
+returns the same rows, answer, and ratio, and quote its last line. Timings vary with your region and
+whether the instance was idle.
 
 ## How it works
 
@@ -137,8 +131,7 @@ CREATE TABLE IF NOT EXISTS agent_memory (
 
 Saving a turn is a plain `INSERT` of the text. TiDB generates the embedding. Recall
 ([`memory.py`](memory.py)) runs two queries against the same rows and merges them with reciprocal
-rank fusion (each row scores `1 / (60 + rank)` per list; rows 2 and 3 above tie, and ties keep
-vector order):
+rank fusion (each row scores `1 / (60 + rank)` per list, and ties keep vector order):
 
 ```sql
 -- by meaning: TiDB embeds the question text itself
@@ -163,13 +156,13 @@ fetch the nearest rows first, then filter.
 
 ## About the numbers
 
-- **7,562 tokens** is the scripted size of the chat: the four exchanges' fixed budgets
-  (34 + 420 + 3,900 + 3,200 = 7,554) plus the 8-token question. The stored rows are one-line
-  stand-ins, 165 tokens for all eight.
-- **67 tokens** is the size of the three rows the search returned (18 + 29 + 20), from the
-  `tokens` column, estimated as characters / 4.
-- 7,562 / 67 is about 113x. The ratio models what re-reading a chat that size would cost. It is
-  not a benchmark.
+- **7,552 tokens** is the whole chat as saved: the `tokens` column of the 8 rows (7,544) plus the
+  8-token question. The long replies are saved in full (402, 3,890, and 3,190 tokens).
+- **TODO(measure) tokens** is what the search read back: the same column, summed over the rows it
+  returned.
+- Both use characters / 4 over the same saved text, so about TODO(measure)x compares like with like
+  for this one scripted chat. Nothing re-reads the chat, and it is not a benchmark. Which rows come
+  back can change the read-back: a long saved reply among them costs thousands of tokens.
 
 ## Clean up
 
@@ -190,4 +183,5 @@ fetch the nearest rows first, then filter.
 - **Setup waits a while:** a new full-text index can take a moment before it serves queries. Setup
   waits up to five minutes.
 - **An insert pauses and retries:** the free embedding model can briefly rate-limit. The demo
-  retries automatically.
+  retries automatically. The three long replies (up to about 15,000 characters) take longer to
+  embed than the short messages.

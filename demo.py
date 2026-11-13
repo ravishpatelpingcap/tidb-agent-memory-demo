@@ -45,21 +45,29 @@ def pause(step):
         input("         (press Enter to continue)")
 
 
+def shown(text, n=110):
+    """One line for the terminal; long saved replies are cut here, never in TiDB."""
+    flat = " ".join(text.split())
+    return flat if len(flat) <= n else flat[:n].rstrip() + f"... ({len(text):,} chars saved)"
+
+
 def run_chat(conn=None, step=False):
-    """Play the scripted chat. With a connection, every message is also saved in TiDB."""
+    """Play the scripted chat. With a connection, every message is also saved in TiDB, in full."""
     context, spent, summary = [], 0, []
     notes = ["# Things to remember"]   # the agent's memory.md, kept as a list here
     for turn in chat.TURNS:
-        u_tok = memory.tokens(turn["user"])
-        a_tok = turn["budget"] - u_tok   # the reply's scripted size
-        for who, text, tok in (("you", turn["user"], u_tok), ("agent", turn["agent"], a_tok)):
+        for who, text, saved in (("you", turn["user"], turn["user"]),
+                                 ("agent", turn["agent"], turn["stored"])):
+            tok = memory.tokens(saved)   # counted from the full text, the same way TiDB stores it
             say(who, text, tok)
-            context.append((text, tok))
-            spent += tok
+            if saved != text:
+                note("shortened here, saved in full" if conn else "shortened here")
+            context.append((saved, tok))
             if conn:
-                stored = memory.store(conn, chat.USER_ID, chat.SESSION_ID,
-                                      "user" if who == "you" else "agent", text)
-                note(f"saved to TiDB agent_memory ({stored} tokens as stored)")
+                tok = memory.store(conn, chat.USER_ID, chat.SESSION_ID,
+                                   "user" if who == "you" else "agent", saved)
+                note(f"saved to TiDB agent_memory ({tok:,} tokens as stored)")
+            spent += tok
         if turn.get("note"):
             notes.append(f"- {turn['note']}")
             note(f'memory.md += "{turn["note"]}"')
@@ -75,9 +83,13 @@ def run_chat(conn=None, step=False):
             note(f'summary kept : "I {"; ".join(summary)}."')
             note(f'kept verbatim: the latest exchange ("{kept[0][0]}" and the reply)')
             note(f'deleted      : every older message, including "...we ship on {chat.FACT}."')
+            if conn:
+                note("TiDB still has all 8 rows in agent_memory.")
             context = [("I " + "; ".join(summary) + ".", 0)] + kept
             pause(step)
             print()
+    if conn:
+        print("Saved: your 4 messages and its 4 replies, in full. Your question is searched, not saved.")
     q_tok = memory.tokens(chat.QUESTION)
     say("you", chat.QUESTION, q_tok)
     spent += q_tok
@@ -119,10 +131,10 @@ def cmd_remember(args):
         print(f"(cleared {cleared} rows from a previous run)")
     line("=")
     _, _, spent = run_chat(conn, step=args.step)
-    answer(conn, spent)
+    answer(conn, spent, saved_rows=2 * len(chat.TURNS))
 
 
-def answer(conn, spent=None, question=chat.QUESTION):
+def answer(conn, spent=None, question=chat.QUESTION, saved_rows=None, old_chat=False):
     t0 = time.perf_counter()
     rows = memory.recall(conn, chat.USER_ID, chat.SESSION_ID, question)
     ms = (time.perf_counter() - t0) * 1000
@@ -133,24 +145,30 @@ def answer(conn, spent=None, question=chat.QUESTION):
         return
     print(f"Hybrid recall over agent_memory (vector + full-text, fused with RRF), {ms:.0f} ms:")
     for i, r in enumerate(rows, 1):
-        note(f'{i}. [{r["speaker"]}, {r["tokens"]} tokens, {" + ".join(r["found_by"])}] {r["content"]}')
-    print()
-    top = rows[0]
-    if question != chat.QUESTION:
-        # Your own question: there is no scripted answer, so just show what TiDB found.
-        say("agent", f'Closest match in my memory table: "{top["content"]}"')
-        return
-    if chat.FACT not in top["content"]:
-        say("agent", "I could not find that in my memory table.")
-        return
-    say("agent", f'Atlas ships on {chat.FACT}. Found it in my memory table: "{top["content"]}"')
+        note(f'{i}. [{r["speaker"]}, {r["tokens"]:,} tokens, {" + ".join(r["found_by"])}] {shown(r["content"])}')
     recalled = sum(r["tokens"] for r in rows)
     print()
-    if spent:
-        print(f"This chat cost about {spent:,} tokens (scripted reply sizes). Recall pulled back "
-              f"{recalled} tokens from TiDB, about {spent / recalled:.0f}x fewer than re-reading it.")
-    else:
-        print(f"Recall pulled back {recalled} tokens from TiDB.")
+    if question != chat.QUESTION:
+        # Your own question: there is no scripted answer, so just show what TiDB found.
+        say("agent", f'Closest match in my memory table: "{shown(rows[0]["content"])}"')
+        print(f"Recall read back {recalled:,} tokens from TiDB.")
+        return
+    hit = next((r for r in rows if chat.FACT in r["content"]), None)   # any returned row, not just #1
+    if hit is None:
+        say("agent", "I could not find that in my memory table.")
+        return
+    say("agent", f"Atlas ships on {chat.FACT}. Found it in my memory table "
+                 f'(result {rows.index(hit) + 1} of {len(rows)}): "{shown(hit["content"])}"')
+    print()
+    if not spent:
+        print(f"Recall read back {recalled:,} tokens from TiDB.")
+        return
+    ratio = int(spent / recalled + 0.5)   # rounds half up
+    which = "The old chat" if old_chat else "The whole chat"
+    print(f"{which} is about {spent:,} tokens: the {saved_rows} rows as saved plus your question. "
+          f"Recall read back {recalled:,} tokens from TiDB, about {ratio}x fewer.")
+    print("Both counts use the same estimate (characters / 4) over the same saved text. "
+          "One scripted chat, not a benchmark.")
 
 
 def cmd_recall(args):
@@ -158,7 +176,9 @@ def cmd_recall(args):
     question = args.question or chat.QUESTION
     print("A brand-new process: no conversation, no summary, no notes. Only the table.")
     say("you", question)
-    answer(conn, question=question)
+    saved_rows, saved_tokens = memory.chat_tokens(conn, chat.USER_ID, chat.SESSION_ID)
+    answer(conn, spent=saved_tokens + memory.tokens(question), question=question,
+           saved_rows=saved_rows, old_chat=True)
 
 
 def cmd_reset(_):

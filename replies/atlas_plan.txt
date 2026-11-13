@@ -1,0 +1,11 @@
+On it! Atlas launch prep: messaging doc, pricing page, beta-customer quotes, and a launch-day checklist.
+
+Messaging doc. One page that everyone writes from: the problem in the customer's words, who it is for, the three things it does better than what they use now, and the proof behind each claim. Add a short and a long description, a one-line pitch for social posts, and a list of words to avoid. Sales, support and the website all quote this page, so it is the first thing to lock.
+
+Pricing page. Confirm the plans and the limits in each plan, then write the page around the question a buyer asks first: which plan fits me? Include a comparison table, a short FAQ on billing, upgrades and refunds, and one clear call to action per plan. Have finance and legal read it before it goes live, and check that every plan name matches the billing system exactly.
+
+Beta-customer quotes. Pick four or five beta customers with different use cases and sizes. Send each a short draft quote built from what they told us in interviews, ask them to edit it freely, and get written approval to use their name and logo. Keep one spare quote in case an approval stalls, and store every signed approval with its quote.
+
+Launch-day checklist. Owners for every item, in order: final page review, pricing switch, blog post, email to the customer list, social posts, a note to sales and support with the talk track and known issues, a status page check, and a short watch rota for the first hours. End the day with a quick review of signups, errors and feedback.
+
+I can draft the messaging doc first if you share the product brief.

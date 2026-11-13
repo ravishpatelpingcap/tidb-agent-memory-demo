@@ -170,6 +170,15 @@ def recall(conn, user_id, session_id, question, k=3, candidates=10):
     return sorted(fused.values(), key=lambda r: -r["score"])[:k]   # ties keep vector order
 
 
+def chat_tokens(conn, user_id, session_id):
+    """How many rows this demo saved, and their tokens column summed."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT COUNT(*), COALESCE(SUM(tokens), 0) FROM agent_memory "
+                    "WHERE user_id = %s AND session_id = %s", (user_id, session_id))
+        n, total = cur.fetchone()
+    return int(n), int(total)   # SUM comes back as Decimal
+
+
 def reset(conn, user_id, session_id):
     """Delete only the rows this demo wrote."""
     with conn.cursor() as cur:

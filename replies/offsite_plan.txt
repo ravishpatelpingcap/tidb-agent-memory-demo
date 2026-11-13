@@ -1,0 +1,160 @@
+Full agenda drafted: day one arrivals and kickoff, day two strategy sessions, day three workshops and wrap-up.
+
+Here is the complete plan for the 3-day team offsite, built for about 24 people. Swap in your own numbers where they differ.
+
+Goals
+
+1. Agree on the team's top three priorities for the next half-year, with an owner and a measure of success for each.
+2. Resolve the two or three cross-team decisions that keep getting deferred in normal meetings.
+3. Build trust across the newer and longer-tenured members of the team, and between the product, engineering and customer-facing groups.
+4. Leave with a written plan that everyone has seen and can explain in two minutes.
+
+If the offsite only achieves one thing, it should be goal 1. Every session below either feeds it or depends on it.
+
+Who attends
+
+- Leadership team (5): sets the frame, makes the final calls on priorities.
+- Team leads (7): bring the input from their teams and own the follow-up.
+- Senior individual contributors (8): the people closest to the work and the customers.
+- Guests (2 to 4): one person from finance for the planning session, one from a partner team for the cross-team session, and optionally two customer-facing colleagues for the customer panel.
+- Facilitator (1): someone outside the team, so the leaders can take part rather than run the room.
+
+Venue requirements
+
+- Within about two hours of the office by train or car, so travel does not eat a day.
+- One main room for 24 people in a U-shape or cabaret layout, with good natural light and a screen.
+- Three breakout rooms for groups of six to eight, close to the main room.
+- Wall space or whiteboards for the planning sessions, and permission to stick paper on the walls.
+- Reliable wifi, but with the expectation that laptops stay closed in most sessions.
+- Outdoor space for walking sessions and breaks.
+- Rooms for everyone on site, so evenings can be spent together without a commute.
+- Step-free access throughout, a quiet room, and catering that can handle every dietary need on the list.
+
+Pre-work (sent out about three weeks before)
+
+- A short survey: what should the team start, stop and continue; the biggest risk to the team's plans; one thing each person wants to learn from another group.
+- Each team lead prepares a one-page summary of their area: what went well, what did not, and their top three candidate priorities with a rough cost.
+- Leadership circulates a two-page context memo: company goals, budget envelope, known constraints, and the decisions that must be made at the offsite.
+- Everyone reads the memo and the one-pagers before arriving. Nobody presents slides that repeat them.
+
+Day one: arrivals and kickoff
+
+Morning: travel and arrivals. Check-in, coffee and a light lunch. No sessions before lunch, so nobody has to leave home before dawn.
+
+After lunch, session 1, kickoff (60 minutes). The leadership team opens with why the team is here, the three outcomes for the offsite, and the ground rules: laptops closed unless a session needs them, decisions are made in the room, and disagreement is expected and welcome. The facilitator walks through the agenda and the parking lot for topics that come up but do not fit.
+
+Session 2, where we stand (75 minutes). The survey results, presented by the facilitator, not by leadership, so the room hears its own words. Small groups of four pick the two survey findings that surprised them most and share them back. The aim is a shared picture of the starting point, not solutions.
+
+Break (20 minutes), with an outdoor walk if the weather allows.
+
+Session 3, the customer panel (60 minutes). Two customer-facing colleagues, or two customers on a video call, describe what working with the team looks like from the outside: what helps them, what slows them down, what they wish the team would do. Questions from the room. This grounds the strategy sessions in real needs rather than internal preferences.
+
+Session 4, pairs across groups (45 minutes). Everyone is paired with someone from a different group whom they know least. Each pair walks for 30 minutes with three prompts: what are you proud of, what is hardest about your work right now, and what do you wish the other's group understood about yours. Pairs share one insight each back in the room.
+
+Evening: team dinner. Seating is mixed by design. No speeches beyond a short welcome. An optional low-key activity after dinner, such as a quiz or board games, for those who want it.
+
+Day two: strategy sessions
+
+Breakfast, then session 5, the context (45 minutes). Leadership walks through the context memo in 15 minutes and answers questions for 30. The point is to make sure everyone works from the same constraints: budget, headcount, company goals and the decisions that must be made.
+
+Session 6, candidate priorities (90 minutes). Each team lead has five minutes to present their top three candidate priorities from their one-pager, with no slides. The facilitator captures every candidate on the wall. Then the room clusters them: duplicates are merged, and related items are grouped. Expect 15 to 20 candidates to become 8 to 10 clusters.
+
+Break (20 minutes).
+
+Session 7, scoring (60 minutes). Small groups score each cluster on impact for customers, impact on company goals, cost and effort, and risk of not doing it. Each group posts its scores on the wall. The facilitator highlights where groups agree and where they differ sharply. Disagreements are the agenda for the afternoon, not a problem to smooth over.
+
+Lunch, outdoors if possible.
+
+Session 8, the hard trade-offs (90 minutes). The room works through the clusters where scores diverged. For each, the people who scored it highest and lowest explain their reasoning in two minutes each, then the room discusses. Leadership makes a call in the room, or names exactly what information is missing and who will bring it back.
+
+Break (20 minutes).
+
+Session 9, the top three (60 minutes). Leadership proposes the top three priorities, based on the morning's work. The room tests them: does each have a clear owner, a measure of success and a first step? What are we explicitly not doing so these can happen? The stop list matters as much as the priority list.
+
+Session 10, cross-team decisions (45 minutes). The two or three decisions that keep getting deferred, prepared in advance by the people closest to them. Each gets a one-page options paper and a decision in the room, or a named owner and a clear next step: the decision returns at the first leadership meeting after the offsite.
+
+Evening: free time, then an informal dinner. People who want to keep talking about the day can; nobody is required to.
+
+Day three: workshops and wrap-up
+
+Breakfast, then session 11, workshops round one (75 minutes). Three parallel workshops, one per priority. Each group, led by the priority's owner, turns the priority into a plan: outcomes, milestones, the first three actions, the people and budget needed, and the risks. People choose which workshop to join, with the facilitator balancing numbers.
+
+Break (15 minutes).
+
+Session 12, workshops round two (45 minutes). Everyone rotates to a different workshop and reviews that group's plan: what is missing, what is unrealistic, what dependencies on other teams are not yet named. The owners take notes but do not defend the plan yet.
+
+Session 13, plans back to the room (45 minutes). Each owner presents the revised plan in five minutes. Questions and final adjustments. The facilitator checks that the three plans do not conflict for the same people or budget.
+
+Lunch.
+
+Session 14, commitments (45 minutes). Each person writes down one thing they will do differently after the offsite and one thing they need from someone else, and shares it with their small group. Leadership confirms the decisions, the top three priorities, the stop list, and how progress will be reviewed.
+
+Session 15, close (30 minutes). A short retrospective on the offsite itself: what worked, what to change next time. A final round where each person says one word about how they feel leaving. Travel home in the afternoon.
+
+Roles on site
+
+- Sponsor: the most senior leader present. Opens and closes, makes the final calls, and speaks last in scoring sessions.
+- Facilitator: runs the agenda, keeps time, manages the parking lot, and protects the quieter voices.
+- Note taker: one per session, rotating, so nobody misses everything. Notes go into one shared document the same evening.
+- Priority owners: named during session 9, they lead the day three workshops and own the plans afterwards.
+- Logistics owner: venue, meals, travel and any problems on site, so nobody else has to think about them.
+- Wellbeing lead: notices who is flagging, suggests breaks, and makes sure the quiet room and outdoor time are used.
+
+Remote attendees
+
+Try hard to have everyone in person. If one or two people cannot travel, give them a dedicated laptop and camera in the main room, a buddy in the room who brings them into small groups, and the pre-work and wall photos in advance. Do not run any session as a hybrid discussion for more than a handful of remote people; it quietly turns the in-room group into an audience. If more than three people are remote, hold a separate short session for them before the offsite and bring their input in through the facilitator.
+
+Materials to prepare
+
+- The agenda on one page, printed for every seat and posted on the wall.
+- The survey results as large posters, one finding per sheet.
+- Each team lead's one-pager, printed and posted before session 6.
+- A scoring grid for session 7, with the four criteria and a simple scale of one to five.
+- Blank plan templates for the workshops: outcomes, milestones, first three actions, people and budget, risks.
+- Cards for the commitments in session 14, which each person keeps.
+
+Facilitation notes
+
+- Keep sessions to the time. The facilitator has authority to cut discussion and move items to the parking lot.
+- Use small groups for thinking and the full room for deciding.
+- Ask quieter people for input in small groups first, where it is easier to speak up.
+- Make every decision visible: written on the wall, read back aloud, and photographed.
+- Avoid presentations longer than ten minutes. If a topic needs more, it belongs in the pre-work.
+
+Budget (rough, per person)
+
+- Venue and rooms for two nights: the largest item, usually 55 to 65 percent of the total.
+- Food and drink, including two dinners: about 20 percent.
+- Travel: about 10 to 15 percent, depending on location.
+- Facilitator: a fixed fee, often 5 to 10 percent of the total for a group this size.
+- Materials and activities: under 5 percent.
+Ask venues for an all-inclusive day rate; it is usually simpler and lower than paying for items separately.
+
+Logistics checklist
+
+- Hold the venue as soon as the timing is agreed internally, with a cancellation clause.
+- Confirm attendance, dietary needs, accessibility needs and room preferences through one form.
+- Book group travel or share a travel guide with the options and costs.
+- Send the pre-work and the context memo, with a reminder a week before.
+- Print the agenda, the survey results and the one-pagers for the walls.
+- Pack markers, sticky notes, flip chart paper, tape, a speaker and spare chargers.
+- Name a logistics owner on site who is not also a participant in every session.
+- Agree how photos and notes will be captured and where they will be shared.
+
+Risks and how to handle them
+
+- Leaders dominate the discussion: the external facilitator, small groups first, and an explicit rule that leaders speak last on scoring.
+- Too many priorities survive: the stop list is mandatory, and the top three must fit the budget envelope from the context memo.
+- Decisions are reopened after the offsite: write them down, read them back in the room, and send the summary within 48 hours.
+- Fatigue on day two: real breaks, outdoor time, no evening session, and a free evening.
+- People feel left out of the top three: show how each candidate was scored and where it landed, so the reasoning is visible.
+
+After the offsite
+
+- Within 48 hours: a written summary with the decisions, the top three priorities and their owners, the stop list, and the commitments from session 14.
+- Within two weeks: each owner shares the detailed plan with the wider team.
+- At the first leadership meeting: the deferred cross-team decisions return for a final call.
+- Every month: a short review of progress on the three priorities, with the measures agreed at the offsite.
+- After three months: a check-in on the commitments, and a short survey on whether the offsite changed how the team works.
+
+Happy to turn this into a one-page agenda for attendees, draft the pre-work survey, or write the invitation email to all the attendees.
