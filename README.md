@@ -100,12 +100,23 @@ Getting it back means re-reading the whole chat, about 7,552 tokens, if a transc
 `python demo.py remember` plays the same chat, saves each message in full, and ends like this:
 
 ```
-TODO(measure): paste the tail of a real `remember` run here, from the "Saved: ..." line to the end.
+Saved: your 4 messages and its 4 replies, in full. Your question is searched, not saved.
+   you > Remind me, when do we ship Atlas?  (~8 tokens)
+
+Hybrid recall over agent_memory (vector + full-text, fused with RRF), 558 ms:
+         1. [user, 18 tokens, vector #1 + full-text #1] I'm a Product Manager. Help me prep the Atlas launch, we ship on Oct 12.
+         2. [agent, 20 tokens, vector #3 + full-text #2] Nice to meet you! Let me note that down. So, what are you working on these days?
+         3. [agent, 402 tokens, vector #2 + full-text #4] On it! Atlas launch prep: messaging doc, pricing page, beta-customer quotes, and a launch-day checklist. Messa... (1,611 chars saved)
+
+ agent > Atlas ships on Oct 12. Found it in my memory table (result 1 of 3): "I'm a Product Manager. Help me prep the Atlas launch, we ship on Oct 12."
+
+The whole chat is about 7,552 tokens: the 8 rows as saved plus your question. Recall read back 440 tokens from TiDB, about 17x fewer.
+Both counts use the same estimate (characters / 4) over the same saved text. One scripted chat, not a benchmark.
 ```
 
-`python demo.py recall` starts a new process with no conversation at all. TODO(measure): confirm it
-returns the same rows, answer, and ratio, and quote its last line. Timings vary with your region and
-whether the instance was idle.
+`python demo.py recall` starts a new process with no conversation at all. It returns the same three
+rows and answer, and ends with `The old chat is about 7,552 tokens ... Recall read back 440 tokens
+from TiDB, about 17x fewer.` Timings vary with your region and whether the instance was idle.
 
 ## How it works
 
@@ -158,10 +169,10 @@ fetch the nearest rows first, then filter.
 
 - **7,552 tokens** is the whole chat as saved: the `tokens` column of the 8 rows (7,544) plus the
   8-token question. The long replies are saved in full (402, 3,890, and 3,190 tokens).
-- **TODO(measure) tokens** is what the search read back: the same column, summed over the rows it
-  returned.
-- Both use characters / 4 over the same saved text, so about TODO(measure)x compares like with like
-  for this one scripted chat. Nothing re-reads the chat, and it is not a benchmark. Which rows come
+- **440 tokens** is what the search read back: the same column, summed over the three rows it
+  returned (18 + 20 + 402). The third is the full Atlas launch plan.
+- Both use characters / 4 over the same saved text, so 7,552 / 440, about 17x, compares like with
+  like for this one scripted chat. Nothing re-reads the chat, and it is not a benchmark. Which rows come
   back can change the read-back: a long saved reply among them costs thousands of tokens.
 
 ## Clean up
