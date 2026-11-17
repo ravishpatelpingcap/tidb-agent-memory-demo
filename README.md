@@ -196,3 +196,7 @@ fetch the nearest rows first, then filter.
 - **An insert pauses and retries:** the free embedding model can briefly rate-limit. The demo
   retries automatically. The three long replies (up to about 15,000 characters) take longer to
   embed than the short messages.
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE).
